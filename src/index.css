@@ -1,0 +1,388 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary-navy: #0f172a;
+  --primary-blue: #1e3a8a;
+  --royal-blue: #2563eb;
+  --royal-blue-hover: #1d4ed8;
+  --bg-light-blue: #f0f6ff;
+  --bg-slate: #f8fafc;
+  --success-green: #16a34a;
+  --success-green-light: #dcfce7;
+  --warning-amber: #d97706;
+  --warning-amber-light: #fef3c7;
+  --danger-red: #dc2626;
+  --danger-red-light: #fee2e2;
+  --border-subtle: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global icon size defaults — since Tailwind is not active, map common w-X classes to pixel sizes */
+svg { overflow: visible; }
+.w-3    { width: 12px;  height: 12px; }
+.w-3\.5 { width: 14px;  height: 14px; }
+.w-4    { width: 16px;  height: 16px; }
+.w-5    { width: 20px;  height: 20px; }
+.w-6    { width: 24px;  height: 24px; }
+.w-7    { width: 28px;  height: 28px; }
+.w-8    { width: 32px;  height: 32px; }
+.w-10   { width: 40px;  height: 40px; }
+.w-12   { width: 48px;  height: 48px; }
+.w-16   { width: 64px;  height: 64px; }
+.w-full { width: 100%; }
+.h-3    { height: 12px; }
+.h-3\.5 { height: 14px; }
+.h-4    { height: 16px; }
+.h-5    { height: 20px; }
+.h-6    { height: 24px; }
+.h-7    { height: 28px; }
+.h-8    { height: 32px; }
+.h-10   { height: 40px; }
+.h-12   { height: 48px; }
+.h-16   { height: 64px; }
+.h-full { height: 100%; }
+
+.barangay-seal-img {
+  border-radius: 50%;
+  object-fit: contain;
+  vertical-align: middle;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-slate);
+  color: var(--text-dark);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* App Container */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Focus Ring for Inputs and Buttons */
+.focus-ring:focus {
+  border-color: var(--royal-blue) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Navigation Styles */
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+  .desktop-actions {
+    display: flex !important;
+  }
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+  .hero-two-column {
+    grid-template-columns: 1.15fr 0.85fr !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .progress-steps-row {
+    display: none !important;
+  }
+  .progress-mobile-compact {
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .progress-steps-row {
+    display: flex !important;
+  }
+  .progress-mobile-compact {
+    display: none !important;
+  }
+}
+
+/* Service Card Hover */
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.selectable-service-card:hover {
+  border-color: #93c5fd !important;
+}
+
+.selectable-service-card.selected {
+  border-color: #2563eb !important;
+  background-color: #eff6ff !important;
+}
+
+.btn-apply-service:hover {
+  background-color: #1d4ed8 !important;
+  transform: translateY(-1px);
+}
+
+.hero-btn-primary:hover {
+  background-color: #1d4ed8 !important;
+  transform: translateY(-2px);
+}
+
+.hero-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.table-row-hover:hover {
+  background-color: #f8fafc;
+}
+
+.footer-link:hover {
+  color: #60a5fa !important;
+}
+
+.footer-legal-link:hover {
+  color: #ffffff !important;
+}
+
+.nav-link-btn:hover {
+  color: #60a5fa !important;
+}
+
+/* ── Interactive Lift & Feedback Effects ─────────────────────────────────────── */
+.interactive-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+.interactive-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.interactive-btn {
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interactive-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.interactive-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+.interactive-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Focus Visible Rings (WCAG 2.1 AA Compliance) ────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--royal-blue) !important;
+  outline-offset: 2px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px !important;
+}
+
+/* ── Skeleton Loading Shimmer ────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 0%,
+    #e2e8f0 35%,
+    #cbd5e1 50%,
+    #e2e8f0 65%,
+    #f1f5f9 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite ease-in-out;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Scroll Reveal Utilities ──────────────────────────────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Toast Notifications Keyframes ────────────────────────────────────────── */
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+
+.toast-enter {
+  animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+  animation: toastSlideOut 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Modal Dialog Animations ──────────────────────────────────────────────── */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-enter {
+  animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Spinner Rotation ─────────────────────────────────────────────────────── */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── Prefers-Reduced-Motion: Strict Accessibility Support ─────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .interactive-card:hover,
+  .interactive-btn:hover,
+  .interactive-btn:active {
+    transform: none !important;
+  }
+  
+  .skeleton-shimmer {
+    animation: none !important;
+    background: #e2e8f0 !important;
+  }
+}
+
+/* Printing Utilities */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .no-print,
+  .navbar-header,
+  .main-footer,
+  .hero-section,
+  button,
+  .progress-indicator-container {
+    display: none !important;
+  }
+
+  .modal-overlay {
+    position: static !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+
+  .modal-content {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+  }
+
+  .print-area {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+}
+
