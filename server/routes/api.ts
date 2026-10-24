@@ -11,7 +11,8 @@ import {
   approveApplication, 
   rejectApplication, 
   moveToVerification, 
-  markReadyForClaiming 
+  markReadyForClaiming,
+  markClaimed
 } from '../controllers/staffController';
 import { 
   getDashboardStatistics, 
@@ -43,6 +44,7 @@ router.patch('/staff/applications/:id/approve', authenticate, requireRole(['admi
 router.patch('/staff/applications/:id/reject', authenticate, requireRole(['admin', 'staff']), rejectApplication);
 router.patch('/staff/applications/:id/verify', authenticate, requireRole(['admin', 'staff']), moveToVerification);
 router.patch('/staff/applications/:id/ready', authenticate, requireRole(['admin', 'staff']), markReadyForClaiming);
+router.patch('/staff/applications/:id/claim', authenticate, requireRole(['admin', 'staff']), markClaimed);
 
 // ── 5. Dashboard Statistics ──────────────────────────────────────────────────
 router.get('/dashboard/statistics', getDashboardStatistics);

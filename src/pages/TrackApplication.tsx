@@ -95,14 +95,14 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
         id: 'verification',
         title: 'Under Verification',
         description: 'Cross-checking community records & Lupon files',
-        completed: ['Under Verification', 'Approved', 'Ready for Claiming'].includes(status) && !isRejected,
+        completed: ['Under Verification', 'Approved', 'Ready for Claiming', 'Successful'].includes(status) && !isRejected,
         active: status === 'Under Verification'
       },
       {
         id: 'approved',
         title: isRejected ? 'Application Rejected' : 'Approved & Processing',
         description: isRejected ? 'Requirements issue or unresolved dispute noted' : 'Endorsed for Punong Barangay official signature',
-        completed: ['Approved', 'Ready for Claiming'].includes(status) || isRejected,
+        completed: ['Approved', 'Ready for Claiming', 'Successful'].includes(status) || isRejected,
         active: status === 'Approved',
         isError: isRejected
       },
@@ -110,8 +110,15 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
         id: 'ready',
         title: 'Ready for Claiming',
         description: 'Signed certificate sealed and ready at Window 2',
-        completed: status === 'Ready for Claiming',
+        completed: ['Ready for Claiming', 'Successful'].includes(status) && !isRejected,
         active: status === 'Ready for Claiming'
+      },
+      {
+        id: 'successful',
+        title: 'Claimed & Successful',
+        description: 'Official document released and claimed by applicant',
+        completed: status === 'Successful',
+        active: status === 'Successful'
       }
     ];
 
@@ -235,7 +242,7 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
           {/* Database Verification Note */}
           <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#64748b' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
-            <span>Connected to Barangay San Jose Official Database • Enter the Reference Number from your application receipt.</span>
+            <span>Connected to Barangay San Isidro Official Database • Enter the Reference Number from your application receipt.</span>
           </div>
         </div>
 
@@ -437,6 +444,12 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
                   <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>
                     Next-Step Instructions:
                   </h4>
+
+                  {activeRecord.status === 'Successful' && (
+                    <div style={{ padding: '1rem', backgroundColor: '#ecfdf5', borderRadius: '0.5rem', border: '1px solid #a7f3d0', color: '#065f46', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                      <strong>✓ Document Claimed (Successful):</strong> This document was physically received and claimed by the applicant at the Barangay Hall. The transaction has concluded successfully. Thank you!
+                    </div>
+                  )}
 
                   {activeRecord.status === 'Ready for Claiming' && (
                     <div style={{ padding: '1rem', backgroundColor: '#eff6ff', borderRadius: '0.5rem', border: '1px solid #bfdbfe', color: '#1e40af', fontSize: '0.85rem', lineHeight: 1.5 }}>

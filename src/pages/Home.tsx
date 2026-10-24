@@ -4,6 +4,7 @@ import type { DocumentType, ServiceInfo } from '../types';
 import { servicesApi } from '../services/api';
 import { 
   ArrowRight, 
+  ArrowUp,
   Search, 
   CheckCircle2, 
   Clock, 
@@ -22,6 +23,7 @@ interface HomeProps {
 export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
   const [services, setServices] = useState<ServiceInfo[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState<boolean>(true);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoadingServices(true);
@@ -34,18 +36,47 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
       setIsLoadingServices(false);
     });
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 250) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
   return (
     <div className="home-page" style={{ width: '100%', minHeight: '100%' }}>
-      {/* Hero Section */}
+      {/* Hero Section — Full Viewport Screen with Scrolling Barangay Hall Background */}
       <section
         className="hero-section"
         style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #172554 100%)',
+          backgroundImage: 'linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(30, 58, 138, 0.68) 50%, rgba(15, 23, 42, 0.84) 100%), url("/barangay-hall.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundAttachment: 'scroll',
+          backgroundRepeat: 'no-repeat',
           color: '#ffffff',
-          padding: '4rem 1.5rem',
+          minHeight: 'calc(100vh - 68px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '2.5rem 1.5rem 3.5rem 1.5rem',
           position: 'relative',
           overflow: 'hidden',
-          borderBottom: '1px solid #1e40af'
+          borderBottom: '1px solid #1e40af',
+          boxSizing: 'border-box'
         }}
       >
         {/* Subtle decorative background circles */}
@@ -65,11 +96,12 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
         <div
           style={{
             maxWidth: '1280px',
+            width: '100%',
             margin: '0 auto',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             alignItems: 'center',
-            gap: '3.5rem',
+            gap: '3rem',
             position: 'relative',
             zIndex: 1
           }}
@@ -182,24 +214,62 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '1.5rem',
+                gap: '0.875rem',
                 marginTop: '2.5rem',
-                paddingTop: '2rem',
-                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-                fontSize: '0.825rem',
-                color: '#94a3b8'
+                paddingTop: '1.75rem',
+                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                fontSize: '0.85rem'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <CheckCircle2 className="w-4 h-4" style={{ color: '#22c55e' }} />
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '9999px',
+                  color: '#ffffff',
+                  fontWeight: 600
+                }}
+              >
+                <CheckCircle2 className="w-4 h-4" style={{ color: '#4ade80' }} />
                 <span>No Long Queues</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Clock className="w-4 h-4" style={{ color: '#60a5fa' }} />
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '9999px',
+                  color: '#ffffff',
+                  fontWeight: 600
+                }}
+              >
+                <Clock className="w-4 h-4" style={{ color: '#93c5fd' }} />
                 <span>24/7 Online Filing</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <ShieldCheck className="w-4 h-4" style={{ color: '#38bdf8' }} />
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '9999px',
+                  color: '#ffffff',
+                  fontWeight: 600
+                }}
+              >
+                <ShieldCheck className="w-4 h-4" style={{ color: '#67e8f9' }} />
                 <span>DILG & RA 11032 Compliant</span>
               </div>
             </div>
@@ -302,21 +372,69 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
             </div>
           </div>
         </div>
+
+        {/* Scroll Indicator button to Services */}
+        <div
+          onClick={() => {
+            const el = document.getElementById('services');
+            el?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.2rem',
+            color: '#93c5fd',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            opacity: 0.85,
+            zIndex: 2,
+            userSelect: 'none',
+            transition: 'opacity 0.2s ease, transform 0.2s ease'
+          }}
+          className="hero-scroll-btn"
+        >
+          <span>Explore Services</span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ animation: 'bounceSlow 1.8s infinite' }}
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
       </section>
 
-      {/* Available Services Section */}
+      {/* Available Services Section — Full Viewport Screen */}
       <section
         id="services"
         style={{
-          padding: '5rem 1.5rem',
+          minHeight: 'calc(100vh - 68px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '3rem 1.5rem',
           backgroundColor: '#f8fafc',
-          borderBottom: '1px solid #e2e8f0'
+          borderBottom: '1px solid #e2e8f0',
+          boxSizing: 'border-box',
+          scrollMarginTop: '68px'
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
           {/* Section Heading */}
           <ScrollReveal>
-            <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 3.5rem auto' }}>
+            <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 2.25rem auto' }}>
               <div
                 style={{
                   display: 'inline-block',
@@ -326,7 +444,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
                   backgroundColor: '#eff6ff',
                   padding: '0.25rem 0.75rem',
                   borderRadius: '9999px',
-                  marginBottom: '0.75rem',
+                  marginBottom: '0.5rem',
                   textTransform: 'uppercase',
                   letterSpacing: '1px'
                 }}
@@ -339,12 +457,12 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
                   fontWeight: 800,
                   color: '#0f172a',
                   lineHeight: 1.25,
-                  marginBottom: '0.75rem'
+                  marginBottom: '0.5rem'
                 }}
               >
                 Available Barangay Documents
               </h2>
-              <p style={{ fontSize: '1rem', color: '#64748b', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '1rem', color: '#64748b', lineHeight: 1.5, margin: 0 }}>
                 Select a certificate or clearance below to begin your fast and organized online application.
               </p>
             </div>
@@ -358,7 +476,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
-                gap: '2rem'
+                gap: '1.75rem'
               }}
             >
               {services.map((service, index) => (
@@ -375,22 +493,22 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
           {/* Note below cards */}
           <div
             style={{
-              marginTop: '3rem',
+              marginTop: '2rem',
               backgroundColor: '#eff6ff',
               border: '1px solid #bfdbfe',
               borderRadius: '0.75rem',
-              padding: '1.25rem 1.5rem',
+              padding: '1rem 1.25rem',
               display: 'flex',
               alignItems: 'center',
               gap: '1rem',
               maxWidth: '820px',
-              margin: '3rem auto 0 auto'
+              margin: '2rem auto 0 auto'
             }}
           >
             <div
               style={{
-                width: '40px',
-                height: '40px',
+                width: '36px',
+                height: '36px',
                 borderRadius: '50%',
                 backgroundColor: '#dbeafe',
                 color: '#1d4ed8',
@@ -402,22 +520,27 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
             >
               <FileCheck className="w-5 h-5" />
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#1e3a8a', lineHeight: 1.5 }}>
+            <div style={{ fontSize: '0.875rem', color: '#1e3a8a', lineHeight: 1.45 }}>
               <strong>Need a different barangay certificate?</strong> Please visit the Barangay Hall Public Assistance and Complaints Desk (PACD) during official office hours for specialized certifications.
             </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* How It Works Section — Full Viewport Screen */}
       <section
         style={{
-          padding: '5rem 1.5rem',
-          backgroundColor: '#ffffff'
+          minHeight: 'calc(100vh - 68px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '3.5rem 1.5rem',
+          backgroundColor: '#ffffff',
+          boxSizing: 'border-box'
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 3.5rem auto' }}>
+        <div style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 2.5rem auto' }}>
             <div
               style={{
                 display: 'inline-block',
@@ -619,6 +742,64 @@ export const Home: React.FC<HomeProps> = ({ onNavigate, onApplyService }) => {
           </div>
         </div>
       </section>
+
+      {/* Floating Back to Home / Top Arrow Button */}
+      <button
+        type="button"
+        onClick={handleScrollToTop}
+        className="back-to-home-btn"
+        aria-label="Back to top of Home"
+        title="Back to Home"
+        style={{
+          position: 'fixed',
+          bottom: '2rem',
+          right: '2rem',
+          zIndex: 90,
+          width: '50px',
+          height: '50px',
+          borderRadius: '50%',
+          backgroundColor: '#2563eb',
+          backgroundImage: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+          color: '#ffffff',
+          border: '2px solid rgba(255, 255, 255, 0.4)',
+          boxShadow: '0 8px 20px -4px rgba(37, 99, 235, 0.45), 0 4px 8px -2px rgba(15, 23, 42, 0.2)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: showBackToTop ? 1 : 0,
+          visibility: showBackToTop ? 'visible' : 'hidden',
+          transform: showBackToTop ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.8)',
+          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: showBackToTop ? 'auto' : 'none'
+        }}
+      >
+        <ArrowUp className="w-5 h-5" />
+      </button>
+
+      <style>{`
+        @keyframes bounceSlow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(6px);
+          }
+        }
+        .hero-scroll-btn:hover {
+          opacity: 1 !important;
+          color: #ffffff !important;
+          transform: translateX(-50%) translateY(2px) !important;
+        }
+        .back-to-home-btn:hover {
+          transform: translateY(-4px) scale(1.08) !important;
+          box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.65), 0 6px 12px -2px rgba(15, 23, 42, 0.25) !important;
+          background-image: linear-gradient(135deg, #60a5fa 0%, #1e40af 100%) !important;
+        }
+        .back-to-home-btn:active {
+          transform: translateY(0) scale(0.96) !important;
+        }
+      `}</style>
     </div>
   );
 };

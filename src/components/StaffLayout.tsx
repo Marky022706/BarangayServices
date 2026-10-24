@@ -149,23 +149,6 @@ export const StaffLayout: React.FC<StaffLayoutProps> = ({ children, staffUser, o
         {children}
       </main>
 
-      {/* Staff Footer */}
-      <footer
-        style={{
-          backgroundColor: '#0f172a',
-          borderTop: '1px solid #1e293b',
-          padding: '1rem 1.5rem',
-          textAlign: 'center',
-          fontSize: '0.775rem',
-          color: '#64748b'
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: '100%' }}>
-          Barangay e-Services Staff Portal — Internal Management System •{' '}
-          <span style={{ color: '#22c55e', fontWeight: 600 }}>● MySQL Database Live Connected</span>
-        </div>
-      </footer>
-
       <style>{`
         .staff-logout-btn:hover {
           background-color: rgba(239, 68, 68, 0.2) !important;

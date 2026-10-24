@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import pool from '../database/db';
 import { generateSequentialCode } from '../utils/referenceGenerator';
 import { mapRowToApplicationRecord, ApplicationRow } from './applicationsController';
-import type { RowDataPacket } from 'mysql2';
 
 /**
  * PATCH /api/staff/applications/:id/approve
@@ -306,3 +305,72 @@ export async function moveToVerification(req: Request, res: Response): Promise<v
     conn.release();
   }
 }
+
+/**
+ * PATCH /api/staff/applications/:id/claim
+ * Marks an application as Successful when claimed by the resident.
+ */
+export async function markClaimed(req: Request, res: Response): Promise<void> {
+  const { id } = req.params;
+  const { remarks } = req.body;
+  const staffName = req.user?.fullName || 'Barangay Staff';
+  const staffUserId = req.user?.id || null;
+
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    const [rows] = await conn.query<ApplicationRow[]>(
+      'SELECT * FROM applications WHERE id = ? OR app_code = ? FOR UPDATE',
+      [id, id]
+    );
+
+    const app = rows[0];
+    if (!app) {
+      await conn.rollback();
+      res.status(404).json({ success: false, message: 'Application record not found.' });
+      return;
+    }
+
+    const finalRemarks = remarks?.trim() || 'Official document received and claimed by applicant. Transaction successfully completed.';
+    const newPaymentStatus = app.payment_status === 'Pending' ? 'Paid' : app.payment_status;
+
+    await conn.query(
+      `UPDATE applications 
+       SET status = 'Successful',
+           payment_status = ?,
+           remarks = ?,
+           processed_by_user_id = ?,
+           updated_at = NOW()
+       WHERE id = ?`,
+      [newPaymentStatus, finalRemarks, staffUserId, app.id]
+    );
+
+    await conn.query(
+      `INSERT INTO application_history (application_id, previous_status, new_status, action_type, remarks, changed_by_name)
+       VALUES (?, ?, 'Successful', 'DOCUMENT_CLAIMED', ?, ?)`,
+      [app.id, app.status, finalRemarks, staffName]
+    );
+
+    await conn.commit();
+
+    const [updatedRows] = await conn.query<ApplicationRow[]>(
+      'SELECT * FROM applications WHERE id = ?',
+      [app.id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Application marked as Successful (Claimed).',
+      data: mapRowToApplicationRecord(updatedRows[0])
+    });
+  } catch (err: any) {
+    await conn.rollback();
+    console.error('[CLAIM ERROR]', err);
+    res.status(500).json({ success: false, message: 'Failed to update application status.' });
+  } finally {
+    conn.release();
+  }
+}
+

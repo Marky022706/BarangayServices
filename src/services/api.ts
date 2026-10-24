@@ -34,6 +34,7 @@ export interface DashboardStats {
   approved: number;
   readyForClaiming: number;
   rejected: number;
+  successful?: number;
   submittedToday: number;
   byService: Record<string, number>;
 }
@@ -77,7 +78,7 @@ async function request<T>(
       headers,
       credentials: 'include'
     });
-  } catch (netErr: any) {
+  } catch (_netErr: any) {
     // Network disconnect, server down, or offline
     throw new Error('Unable to connect to the server. Check your connection and try again.');
   }
@@ -247,6 +248,15 @@ export const staffApi = {
 
   async markReady(id: string, payload?: { remarks?: string }): Promise<ApplicationRecord> {
     const res = await request<ApiResponse<ApplicationRecord>>(`/staff/applications/${id}/ready`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload || {})
+    });
+    if (!res.data) throw new Error(res.message || 'Failed to update application.');
+    return res.data;
+  },
+
+  async markClaimed(id: string, payload?: { remarks?: string }): Promise<ApplicationRecord> {
+    const res = await request<ApiResponse<ApplicationRecord>>(`/staff/applications/${id}/claim`, {
       method: 'PATCH',
       body: JSON.stringify(payload || {})
     });

@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
             <IconSeal className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="brand-title">Barangay San Jose</h1>
+            <h1 className="brand-title">Barangay San Isidro</h1>
             <p className="brand-subtitle">Official e-Government Services Portal</p>
           </div>
         </div>

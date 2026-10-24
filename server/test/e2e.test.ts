@@ -66,7 +66,7 @@ async function runTests() {
         email: 'juan.rizal@example.ph',
         houseStreet: 'Block 5 Lot 12 Kalayaan St.',
         purokSitio: 'Purok 3',
-        barangay: 'Barangay San Jose',
+        barangay: 'Barangay San Isidro',
         cityMunicipality: 'Quezon City',
         province: 'Metro Manila'
       },
@@ -185,7 +185,7 @@ async function runTests() {
         civilStatus: 'Married',
         contactNumber: '09187771234',
         purokSitio: 'Purok 1',
-        barangay: 'Barangay San Jose',
+        barangay: 'Barangay San Isidro',
         cityMunicipality: 'Quezon City',
         province: 'Metro Manila'
       },

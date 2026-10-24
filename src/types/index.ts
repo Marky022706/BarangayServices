@@ -5,7 +5,8 @@ export type ApplicationStatus =
   | 'Under Verification' 
   | 'Approved' 
   | 'Rejected' 
-  | 'Ready for Claiming';
+  | 'Ready for Claiming'
+  | 'Successful';
 
 export type PaymentMethod = 'gcash' | 'pay_on_pickup';
 
@@ -79,4 +80,49 @@ export interface ServiceInfo {
   standardFee: string;
   processingTime: string;
   requirements: string[];
+}
+
+export interface ResidentProfile {
+  id?: string;
+  fullName: string;
+  age: number;
+  dateOfBirth: string;
+  civilStatus: CivilStatus;
+  citizenship: string;
+  address: string;
+  contactNumber: string;
+  email: string;
+  barangay?: string;
+  cityMunicipality?: string;
+  province?: string;
+}
+
+export interface ServiceRequest {
+  id: string;
+  referenceCode: string;
+  documentType: DocumentType;
+  fullName: string;
+  age: number;
+  dateOfBirth: string;
+  civilStatus: CivilStatus;
+  citizenship: string;
+  address: string;
+  contactNumber: string;
+  email: string;
+  residencyPeriod?: string;
+  purpose: string;
+  indigencyStatementAccepted?: boolean;
+  noDerogatoryRecordConfirmed?: boolean;
+  paymentMethod: PaymentMethod;
+  paymentStatus: PaymentStatus;
+  amount: number;
+  paymentReferenceNumber?: string;
+  paymentDate?: string;
+  punongBarangay?: string;
+  barangayName?: string;
+  cityMunicipality?: string;
+  province?: string;
+  status: ApplicationStatus;
+  createdAt?: string;
+  updatedAt?: string;
 }

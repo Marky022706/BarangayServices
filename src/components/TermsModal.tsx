@@ -116,7 +116,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
             4. Official Government Records Notice
           </h4>
           <p>
-            All document requests and application records are submitted directly to the Barangay San Jose database management system. Submissions are subject to verification under Philippine laws and local barangay ordinances.
+            All document requests and application records are submitted directly to the Barangay San Isidro database management system. Submissions are subject to verification under Philippine laws and local barangay ordinances.
           </p>
         </div>
 

@@ -170,7 +170,7 @@ export async function createApplication(req: Request, res: Response): Promise<vo
         appCode,
         referenceNumber,
         documentType,
-        req.user?.id || null,
+        (req as any).user?.id || null,
         personalInfo.firstName.trim(),
         personalInfo.middleName?.trim() || null,
         personalInfo.lastName.trim(),
@@ -182,7 +182,7 @@ export async function createApplication(req: Request, res: Response): Promise<vo
         personalInfo.email?.trim() || null,
         personalInfo.houseStreet?.trim() || null,
         personalInfo.purokSitio.trim(),
-        personalInfo.barangay?.trim() || 'Barangay San Jose',
+        personalInfo.barangay?.trim() || 'Barangay San Isidro',
         personalInfo.cityMunicipality?.trim() || 'Quezon City',
         personalInfo.province?.trim() || 'Metro Manila',
         details.purpose.trim(),
@@ -359,24 +359,27 @@ export async function getApplicationById(req: Request, res: Response): Promise<v
  * Public Tracking endpoint for residents.
  */
 export async function trackApplication(req: Request, res: Response): Promise<void> {
-  const { referenceNumber } = req.params;
+  const paramVal = req.params.referenceNumber;
+  const referenceNumber = (Array.isArray(paramVal) ? paramVal[0] : paramVal) || '';
 
   if (!referenceNumber || !referenceNumber.trim()) {
     res.status(400).json({ success: false, message: 'Reference number is required for tracking.' });
     return;
   }
 
+  const cleanRef = referenceNumber.trim();
+
   try {
     const [rows] = await pool.query<ApplicationRow[]>(
       'SELECT * FROM applications WHERE UPPER(TRIM(reference_number)) = UPPER(TRIM(?))',
-      [referenceNumber.trim()]
+      [cleanRef]
     );
 
     const r = rows[0];
     if (!r) {
       res.status(404).json({
         success: false,
-        message: 'No application was found matching reference number ' + referenceNumber.trim().toUpperCase() + '. Please verify the number from your confirmation receipt.'
+        message: 'No application was found matching reference number ' + cleanRef.toUpperCase() + '. Please verify the number from your confirmation receipt.'
       });
       return;
     }

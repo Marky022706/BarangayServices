@@ -148,6 +148,8 @@ function AppContent() {
         updated = await staffApi.moveToVerification(id, { remarks });
       } else if (newStatus === 'Ready for Claiming') {
         updated = await staffApi.markReady(id, { remarks });
+      } else if (newStatus === 'Successful') {
+        updated = await staffApi.markClaimed(id, { remarks });
       } else {
         return;
       }

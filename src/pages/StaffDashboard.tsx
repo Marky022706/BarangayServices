@@ -49,7 +49,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     app: ApplicationRecord | null;
-    action: 'Approve' | 'Reject' | 'Under Verification' | 'Ready for Claiming';
+    action: 'Approve' | 'Reject' | 'Under Verification' | 'Ready for Claiming' | 'Successful';
     title: string;
     message: string;
     variant: 'primary' | 'success' | 'danger';
@@ -83,6 +83,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
   const verificationCount = applications.filter((a) => a.status === 'Under Verification').length;
   const approvedCount = applications.filter((a) => a.status === 'Approved').length;
   const readyCount = applications.filter((a) => a.status === 'Ready for Claiming').length;
+  const successfulCount = applications.filter((a) => a.status === 'Successful').length;
   const rejectedCount = applications.filter((a) => a.status === 'Rejected').length;
 
   // Filter applications
@@ -162,6 +163,19 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
     });
   };
 
+  const handleRequestClaim = (app: ApplicationRecord) => {
+    setConfirmModal({
+      isOpen: true,
+      app,
+      action: 'Successful',
+      title: 'Confirm Document Claimed',
+      message: `Confirm that ${app.personalInfo.firstName} ${app.personalInfo.lastName} has physically received and claimed their official document? The application status will be updated to "Successful".`,
+      variant: 'success',
+      confirmLabel: 'Confirm Claimed (Successful)',
+      reason: ''
+    });
+  };
+
   const handleConfirmActionExecute = async () => {
     const { app, action, reason } = confirmModal;
     if (!app) return;
@@ -218,6 +232,15 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
         );
         toast.success(`Application ${app.referenceNumber} is ready for pick-up!`, 'Ready for Claiming');
         setDetailModalApp((prev) => (prev && prev.id === app.id ? { ...prev, status: 'Ready for Claiming', controlNumber: ctrl } : prev));
+      } else if (action === 'Successful') {
+        await onUpdateStatus(
+          app.id,
+          'Successful',
+          app.controlNumber,
+          'Document received and claimed by applicant. Transaction successfully completed.'
+        );
+        toast.success(`Application ${app.referenceNumber} has been claimed successfully!`, 'Transaction Successful');
+        setDetailModalApp((prev) => (prev && prev.id === app.id ? { ...prev, status: 'Successful' } : prev));
       }
 
       setConfirmModal((prev) => ({ ...prev, isOpen: false }));
@@ -415,7 +438,30 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
             <div style={{ fontSize: '0.725rem', color: '#94a3b8', marginTop: '0.25rem' }}>Ready at Window 2</div>
           </div>
 
-          {/* 5. Rejected */}
+          {/* 5. Successful (Claimed) */}
+          <div
+            onClick={() => setSelectedStatus(selectedStatus === 'Successful' ? 'all' : 'Successful')}
+            style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '0.75rem',
+              padding: '1.25rem',
+              border: selectedStatus === 'Successful' ? '2px solid #059669' : '1px solid #e2e8f0',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748b' }}>Successful</span>
+              <div style={{ padding: '0.35rem', borderRadius: '50%', backgroundColor: '#ecfdf5', color: '#059669' }}>
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+            </div>
+            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#059669' }}>{successfulCount}</div>
+            <div style={{ fontSize: '0.725rem', color: '#94a3b8', marginTop: '0.25rem' }}>Claimed & Completed</div>
+          </div>
+
+          {/* 6. Rejected */}
           <div
             onClick={() => setSelectedStatus(selectedStatus === 'Rejected' ? 'all' : 'Rejected')}
             style={{
@@ -532,6 +578,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                 <option value="Under Verification">Under Verification</option>
                 <option value="Approved">Approved</option>
                 <option value="Ready for Claiming">Ready for Claiming</option>
+                <option value="Successful">Successful (Claimed)</option>
                 <option value="Rejected">Rejected</option>
               </select>
             </div>
@@ -663,26 +710,55 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
 
                     {/* Action Button */}
                     <td style={{ padding: '1rem 1.25rem', textAlign: 'right' }}>
-                      <button
-                        type="button"
-                        onClick={() => setDetailModalApp(app)}
-                        style={{
-                          padding: '0.45rem 0.85rem',
-                          backgroundColor: '#eff6ff',
-                          color: '#1d4ed8',
-                          border: '1px solid #bfdbfe',
-                          borderRadius: '0.375rem',
-                          fontWeight: 600,
-                          fontSize: '0.8rem',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.3rem'
-                        }}
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>View Details</span>
-                      </button>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                        {app.status === 'Ready for Claiming' && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRequestClaim(app);
+                            }}
+                            className="interactive-btn"
+                            title="Mark as Claimed by Resident"
+                            style={{
+                              padding: '0.45rem 0.75rem',
+                              backgroundColor: '#ecfdf5',
+                              color: '#065f46',
+                              border: '1px solid #a7f3d0',
+                              borderRadius: '0.375rem',
+                              fontWeight: 600,
+                              fontSize: '0.78rem',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.3rem'
+                            }}
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Claimed</span>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setDetailModalApp(app)}
+                          style={{
+                            padding: '0.45rem 0.85rem',
+                            backgroundColor: '#eff6ff',
+                            color: '#1d4ed8',
+                            border: '1px solid #bfdbfe',
+                            borderRadius: '0.375rem',
+                            fontWeight: 600,
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.3rem'
+                          }}
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>View Details</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -899,8 +975,8 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                   alignItems: 'center'
                 }}
               >
-                {/* Print Certificate button if Approved or Ready */}
-                {(detailModalApp.status === 'Approved' || detailModalApp.status === 'Ready for Claiming') && onViewPrintCertificate && (
+                {/* Print Certificate button if Approved, Ready, or Successful */}
+                {(detailModalApp.status === 'Approved' || detailModalApp.status === 'Ready for Claiming' || detailModalApp.status === 'Successful') && onViewPrintCertificate && (
                   <button
                     type="button"
                     onClick={() => {
@@ -926,7 +1002,14 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                   </button>
                 )}
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginLeft: 'auto' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginLeft: 'auto', alignItems: 'center' }}>
+                  {detailModalApp.status === 'Successful' && (
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.85rem', backgroundColor: '#ecfdf5', borderRadius: '0.375rem', border: '1px solid #a7f3d0', color: '#065f46', fontSize: '0.825rem', fontWeight: 700 }}>
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Document Claimed & Completed</span>
+                    </div>
+                  )}
+
                   {detailModalApp.status === 'Pending Review' && (
                     <button
                       type="button"
@@ -947,7 +1030,7 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                     </button>
                   )}
 
-                  {detailModalApp.status !== 'Approved' && detailModalApp.status !== 'Ready for Claiming' && (
+                  {detailModalApp.status !== 'Approved' && detailModalApp.status !== 'Ready for Claiming' && detailModalApp.status !== 'Successful' && (
                     <button
                       type="button"
                       onClick={() => handleRequestApprove(detailModalApp)}
@@ -991,7 +1074,31 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
                     </button>
                   )}
 
-                  {detailModalApp.status !== 'Rejected' && (
+                  {detailModalApp.status === 'Ready for Claiming' && (
+                    <button
+                      type="button"
+                      onClick={() => handleRequestClaim(detailModalApp)}
+                      className="interactive-btn"
+                      style={{
+                        padding: '0.55rem 1.15rem',
+                        backgroundColor: '#059669',
+                        color: '#ffffff',
+                        borderRadius: '0.5rem',
+                        fontWeight: 600,
+                        fontSize: '0.85rem',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem'
+                      }}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Mark Claimed (Successful)</span>
+                    </button>
+                  )}
+
+                  {detailModalApp.status !== 'Rejected' && detailModalApp.status !== 'Successful' && (
                     <button
                       type="button"
                       onClick={() => handleRequestReject(detailModalApp)}

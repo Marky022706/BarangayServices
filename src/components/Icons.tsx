@@ -193,6 +193,24 @@ export const ArrowLeft: React.FC<IconProps> = ({ className = 'w-6 h-6', style, s
   </svg>
 );
 
+export const ArrowUp: React.FC<IconProps> = ({ className = 'w-6 h-6', style, size }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    className={className} 
+    style={style} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M12 19V5" />
+    <path d="m5 12 7-7 7 7" />
+  </svg>
+);
+
 export const Check: React.FC<IconProps> = ({ className = 'w-6 h-6', style, size }) => (
   <svg 
     width={size} 
@@ -625,17 +643,38 @@ export const LogOut: React.FC<IconProps> = ({ className = 'w-6 h-6', style, size
 );
 
 // Official Seal / Logo
-export const BarangaySeal: React.FC<IconProps> = ({ className = 'w-8 h-8', style, size }) => (
-  <img
-    src="/logo.png"
-    alt="Parish of San Isidro Labrador - Diocese of Ilagan Logo"
-    className={`barangay-seal-img ${className}`}
-    style={{
-      ...(size ? { width: typeof size === 'number' ? `${size}px` : size, height: typeof size === 'number' ? `${size}px` : size } : {}),
-      ...style
-    }}
-  />
-);
+export const BarangaySeal: React.FC<IconProps> = ({ className = 'w-8 h-8', style, size }) => {
+  let widthVal = size ? (typeof size === 'number' ? `${size}px` : size) : undefined;
+  let heightVal = size ? (typeof size === 'number' ? `${size}px` : size) : undefined;
+
+  if (!widthVal && className) {
+    if (className.includes('w-3.5')) { widthVal = '14px'; heightVal = '14px'; }
+    else if (className.includes('w-4')) { widthVal = '16px'; heightVal = '16px'; }
+    else if (className.includes('w-5')) { widthVal = '20px'; heightVal = '20px'; }
+    else if (className.includes('w-6')) { widthVal = '24px'; heightVal = '24px'; }
+    else if (className.includes('w-8')) { widthVal = '32px'; heightVal = '32px'; }
+    else if (className.includes('w-10')) { widthVal = '40px'; heightVal = '40px'; }
+    else if (className.includes('w-12')) { widthVal = '48px'; heightVal = '48px'; }
+    else if (className.includes('w-14')) { widthVal = '56px'; heightVal = '56px'; }
+    else if (className.includes('w-16')) { widthVal = '64px'; heightVal = '64px'; }
+    else if (className.includes('w-20')) { widthVal = '80px'; heightVal = '80px'; }
+    else if (className.includes('w-full')) { widthVal = '100%'; heightVal = '100%'; }
+  }
+
+  return (
+    <img
+      src="/logo.png"
+      alt="Barangay Official Seal"
+      className={`barangay-seal-img ${className}`}
+      style={{
+        width: widthVal || '32px',
+        height: heightVal || '32px',
+        objectFit: 'contain',
+        ...style
+      }}
+    />
+  );
+};
 
 // Copy icon
 export const Copy: React.FC<IconProps> = ({ className = 'w-4 h-4', style, size }) => (
@@ -656,6 +695,43 @@ export const Copy: React.FC<IconProps> = ({ className = 'w-4 h-4', style, size }
   </svg>
 );
 
+
+export const IconCreditCard: React.FC<IconProps> = ({ className = 'w-6 h-6', style, size }) => (
+  <svg
+    width={size}
+    height={size}
+    className={className}
+    style={style}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="20" height="14" x="2" y="5" rx="2" />
+    <line x1="2" x2="22" y1="10" y2="10" />
+  </svg>
+);
+
+export const IconCash: React.FC<IconProps> = ({ className = 'w-6 h-6', style, size }) => (
+  <svg
+    width={size}
+    height={size}
+    className={className}
+    style={style}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="20" height="12" x="2" y="6" rx="2" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M6 12h.01M18 12h.01" />
+  </svg>
+);
 
 // Backward-compatible named exports for legacy references
 export const IconSeal = BarangaySeal;

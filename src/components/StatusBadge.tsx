@@ -45,6 +45,13 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
           border: '#fecaca',
           icon: <XCircle className="w-3.5 h-3.5" />
         };
+      case 'Successful':
+        return {
+          bg: '#ecfdf5',
+          color: '#065f46',
+          border: '#a7f3d0',
+          icon: <CheckCircle2 className="w-3.5 h-3.5" />
+        };
       default:
         return {
           bg: '#f1f5f9',

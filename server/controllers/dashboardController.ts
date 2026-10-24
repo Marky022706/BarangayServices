@@ -15,6 +15,7 @@ export async function getDashboardStatistics(req: Request, res: Response): Promi
     let approved = 0;
     let ready = 0;
     let rejected = 0;
+    let successful = 0;
 
     for (const r of statusRows) {
       const c = Number(r.count);
@@ -24,6 +25,7 @@ export async function getDashboardStatistics(req: Request, res: Response): Promi
       else if (r.status === 'Approved') approved = c;
       else if (r.status === 'Ready for Claiming') ready = c;
       else if (r.status === 'Rejected') rejected = c;
+      else if (r.status === 'Successful') successful = c;
     }
 
     // 2. Service distribution
@@ -55,6 +57,7 @@ export async function getDashboardStatistics(req: Request, res: Response): Promi
         approved,
         readyForClaiming: ready,
         rejected,
+        successful,
         submittedToday,
         byService: serviceCounts
       }

@@ -75,7 +75,7 @@ export const Apply: React.FC<ApplyProps> = ({
     email: '',
     houseStreet: '',
     purokSitio: 'Purok 1',
-    barangay: 'Barangay San Jose',
+    barangay: 'Barangay San Isidro',
     cityMunicipality: 'Quezon City',
     province: 'Metro Manila'
   });
@@ -610,7 +610,7 @@ export const Apply: React.FC<ApplyProps> = ({
                     value={personalInfo.barangay}
                     onChange={handlePersonalInfoChange}
                     required
-                    placeholder="Barangay San Jose"
+                    placeholder="Barangay San Isidro"
                     error={errors.barangay}
                   />
 

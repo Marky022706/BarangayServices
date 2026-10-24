@@ -53,7 +53,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
         ? 'Medical Assistance' 
         : 'Local Employment Requirement'
     );
-    setPaymentMethod(type === 'indigency' ? 'waived' : 'gcash');
+    setPaymentMethod(type === 'indigency' ? 'pay_on_pickup' : 'gcash');
   };
 
   const getFee = (type: DocumentType): number => {
@@ -79,7 +79,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
     setIsSubmitting(true);
 
     const fee = getFee(selectedDoc);
-    const pStatus: PaymentStatus = selectedDoc === 'indigency' ? 'waived' : (paymentMethod === 'gcash' ? 'paid' : 'pending');
+    const pStatus: PaymentStatus = selectedDoc === 'indigency' ? 'Waived' : (paymentMethod === 'gcash' ? 'Paid' : 'Pending');
 
     setTimeout(() => {
       const newRequestData = {
@@ -102,7 +102,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
         paymentReferenceNumber: paymentMethod === 'gcash' ? paymentReferenceNumber : undefined,
         paymentDate: paymentMethod === 'gcash' ? new Date().toLocaleString() : undefined,
         punongBarangay: 'Hon. Honorio A. Reyes',
-        barangayName: 'Barangay San Jose',
+        barangayName: 'Barangay San Isidro',
         cityMunicipality: 'Quezon City',
         province: 'Metro Manila',
       };
@@ -158,7 +158,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
               </div>
               <h3 className="card-title">Barangay Certificate of Residency</h3>
               <p className="card-description">
-                Official certification confirming resident's home address and period of residency within Barangay San Jose.
+                Official certification confirming resident's home address and period of residency within Barangay San Isidro.
               </p>
               <div className="requirements-list">
                 <strong>Includes:</strong> Full Name, Age, Civil Status, Citizenship, Address, Residency Period, Seal & Signatures.
@@ -366,7 +366,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                         required
                       />
                       <span>
-                        <strong>Indigency Declaration:</strong> I hereby declare that I am a low-income resident of Barangay San Jose with insufficient financial income, seeking official assistance.
+                        <strong>Indigency Declaration:</strong> I hereby declare that I am a low-income resident of Barangay San Isidro with insufficient financial income, seeking official assistance.
                       </span>
                     </label>
                   </div>
@@ -383,7 +383,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                         required
                       />
                       <span>
-                        <strong>Non-Derogatory Declaration:</strong> I certify that I have no pending criminal record or active barangay dispute cases in Barangay San Jose.
+                        <strong>Non-Derogatory Declaration:</strong> I certify that I have no pending criminal record or active barangay dispute cases in Barangay San Isidro.
                       </span>
                     </label>
                   </div>
@@ -409,8 +409,8 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                       </div>
 
                       <div 
-                        className={`payment-option-card ${paymentMethod === 'pickup' ? 'selected' : ''}`}
-                        onClick={() => setPaymentMethod('pickup')}
+                        className={`payment-option-card ${paymentMethod === 'pay_on_pickup' ? 'selected' : ''}`}
+                        onClick={() => setPaymentMethod('pay_on_pickup')}
                       >
                         <div className="payment-icon">
                           <IconCash className="w-5 h-5" />
@@ -427,7 +427,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                             QR Ph
                           </div>
                           <div>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Barangay San Jose Official GCash</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Barangay San Isidro Official GCash</div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Account No: <strong>0917-888-9999</strong></div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Amount to Pay: <strong>₱{getFee(selectedDoc)}.00</strong></div>
                           </div>

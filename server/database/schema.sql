@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `applications` (
   `reference_number` VARCHAR(50) NOT NULL UNIQUE,
   `control_number` VARCHAR(50) NULL UNIQUE,
   `document_type` VARCHAR(50) NOT NULL,
-  `status` ENUM('Pending Review', 'Under Verification', 'Approved', 'Rejected', 'Ready for Claiming') NOT NULL DEFAULT 'Pending Review',
+  `status` ENUM('Pending Review', 'Under Verification', 'Approved', 'Rejected', 'Ready for Claiming', 'Successful') NOT NULL DEFAULT 'Pending Review',
   `user_id` INT NULL,
 
   -- Personal Information
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `applications` (
   `email` VARCHAR(100) NULL,
   `house_street` VARCHAR(200) NULL,
   `purok_sitio` VARCHAR(100) NOT NULL,
-  `barangay` VARCHAR(100) NOT NULL DEFAULT 'Barangay San Jose',
+  `barangay` VARCHAR(100) NOT NULL DEFAULT 'Barangay San Isidro',
   `city_municipality` VARCHAR(100) NOT NULL DEFAULT 'Quezon City',
   `province` VARCHAR(100) NOT NULL DEFAULT 'Metro Manila',
 

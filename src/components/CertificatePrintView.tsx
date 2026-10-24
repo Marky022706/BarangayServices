@@ -129,12 +129,12 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
         {/* Printable Certificate Page */}
         <div
           style={{
-            padding: '2.5rem',
+            padding: '2rem',
             overflowY: 'auto',
             backgroundColor: '#ffffff',
             fontFamily: "'Times New Roman', Times, serif",
             color: '#000000',
-            lineHeight: 1.6,
+            lineHeight: 1.5,
             position: 'relative'
           }}
           className="print-area"
@@ -148,8 +148,8 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
               transform: 'translate(-50%, -50%)',
               opacity: 0.05,
               pointerEvents: 'none',
-              width: '380px',
-              height: '380px'
+              width: '320px',
+              height: '320px'
             }}
           >
             <BarangaySeal className="w-full h-full" />
@@ -157,31 +157,32 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
 
           {/* Official Document Border */}
           <div
+            className="certificate-border"
             style={{
-              border: '3px double #1e3a8a',
-              padding: '2rem',
+              border: '2.5px double #1e3a8a',
+              padding: '1.25rem 1.75rem',
               position: 'relative',
-              minHeight: '650px'
+              boxSizing: 'border-box'
             }}
           >
             {/* Header */}
-            <div style={{ textAlign: 'center', marginBottom: '2rem', position: 'relative' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
-                <BarangaySeal className="w-16 h-16" />
+            <div style={{ textAlign: 'center', marginBottom: '0.75rem', position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.35rem' }}>
+                <BarangaySeal className="w-14 h-14" />
               </div>
-              <div style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <div style={{ fontSize: '0.825rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Republic of the Philippines
               </div>
-              <div style={{ fontSize: '0.9rem', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.825rem', textTransform: 'uppercase' }}>
                 Province of {application.personalInfo.province}
               </div>
-              <div style={{ fontSize: '1rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
                 City of {application.personalInfo.cityMunicipality}
               </div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1e3a8a', textTransform: 'uppercase', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '1.15rem', fontWeight: 'bold', color: '#1e3a8a', textTransform: 'uppercase', marginTop: '0.15rem' }}>
                 OFFICE OF THE PUNONG BARANGAY
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
                 {application.personalInfo.barangay}
               </div>
 
@@ -191,7 +192,7 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
                     position: 'absolute',
                     top: 0,
                     right: 0,
-                    fontSize: '0.85rem',
+                    fontSize: '0.8rem',
                     fontWeight: 'bold',
                     color: '#991b1b',
                     fontFamily: 'monospace'
@@ -202,19 +203,19 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
               )}
             </div>
 
-            <div style={{ height: '2px', backgroundColor: '#1e3a8a', marginBottom: '2rem' }} />
+            <div style={{ height: '2px', backgroundColor: '#1e3a8a', margin: '0.65rem 0' }} />
 
             {/* Document Specific Title */}
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
               <h2
                 style={{
-                  fontSize: '1.6rem',
+                  fontSize: '1.35rem',
                   fontWeight: 'bold',
-                  letterSpacing: '1.5px',
+                  letterSpacing: '1px',
                   color: '#1e3a8a',
                   textTransform: 'uppercase',
                   textDecoration: 'underline',
-                  margin: 0
+                  margin: '0.35rem 0 0.5rem 0'
                 }}
               >
                 {application.documentType === 'clearance' && 'BARANGAY CLEARANCE'}
@@ -224,18 +225,18 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
             </div>
 
             {/* Salutation */}
-            <div style={{ fontWeight: 'bold', fontSize: '1rem', marginBottom: '1.25rem' }}>
+            <div style={{ fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
               TO WHOM IT MAY CONCERN:
             </div>
 
             {/* Body Paragraphs */}
-            <div style={{ fontSize: '1.05rem', textAlign: 'justify', textIndent: '2.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '0.925rem', textAlign: 'justify', textIndent: '2rem', marginBottom: '0.5rem', lineHeight: 1.45 }}>
               {application.documentType === 'clearance' && (
                 <>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     THIS IS TO CERTIFY that <strong>{fullName}</strong>, of legal age, {application.personalInfo.civilStatus.toLowerCase()}, and a bonafide resident of <strong>{completeAddress}</strong>, has been verified through our community and Lupon records.
                   </p>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     FURTHER CERTIFIES that the above-named person has NO DEROGATORY RECORD filed in this office, is of good moral standing in the community, and has not violated any barangay ordinance or criminal statute within our jurisdiction.
                   </p>
                 </>
@@ -243,10 +244,10 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
 
               {application.documentType === 'indigency' && (
                 <>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     THIS IS TO CERTIFY that <strong>{fullName}</strong>, of legal age, {application.personalInfo.civilStatus.toLowerCase()}, is a permanent resident of <strong>{completeAddress}</strong>.
                   </p>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     BASED ON COMMUNITY RECORDS, the above-named person belongs to the indigent or low-income household in this Barangay and is seeking financial or institutional aid for: <strong>{statedPurpose.toUpperCase()}</strong>.
                   </p>
                 </>
@@ -254,53 +255,53 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
 
               {application.documentType === 'residency' && (
                 <>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     THIS IS TO CERTIFY that <strong>{fullName}</strong>, of legal age, {application.personalInfo.civilStatus.toLowerCase()}, is a bonafide resident continuously living at <strong>{completeAddress}</strong> for approximately <strong>{application.details.lengthOfResidency || 'several years'}</strong>.
                   </p>
-                  <p style={{ marginBottom: '1.25rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>
                     THIS CERTIFICATION is issued to confirm resident status and good community standing.
                   </p>
                 </>
               )}
 
-              <p style={{ marginBottom: '1.5rem' }}>
+              <p style={{ marginBottom: '0.5rem' }}>
                 THIS CERTIFICATION is being issued upon the request of the interested party for the purpose of <strong>{statedPurpose.toUpperCase()}</strong> and for whatever legal intent it may serve.
               </p>
 
-              <p>
+              <p style={{ marginBottom: '0.5rem' }}>
                 GIVEN AND ISSUED this <strong>{formattedDate}</strong> at the Office of the Punong Barangay, {application.personalInfo.barangay}, {application.personalInfo.cityMunicipality}, {application.personalInfo.province}.
               </p>
             </div>
 
             {/* Signature & Seal Block */}
-            <div style={{ marginTop: '3.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               {/* Left: Applicant Signature */}
-              <div style={{ textAlign: 'center', width: '220px' }}>
-                <div style={{ height: '40px' }} />
-                <div style={{ borderTop: '1px solid #000000', paddingTop: '0.25rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+              <div style={{ textAlign: 'center', width: '200px' }}>
+                <div style={{ height: '30px' }} />
+                <div style={{ borderTop: '1px solid #000000', paddingTop: '0.2rem', fontSize: '0.8rem', fontWeight: 'bold' }}>
                   Signature of Applicant
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#555555' }}>
+                <div style={{ fontSize: '0.7rem', color: '#555555' }}>
                   Right Thumbmark / ID verified
                 </div>
               </div>
 
               {/* Right: Punong Barangay */}
-              <div style={{ textAlign: 'center', width: '260px' }}>
-                <div style={{ fontSize: '1rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
+              <div style={{ textAlign: 'center', width: '240px' }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
                   HON. HONORIO A. REYES
                 </div>
-                <div style={{ fontSize: '0.85rem' }}>
+                <div style={{ fontSize: '0.8rem' }}>
                   Punong Barangay
                 </div>
-                <div style={{ fontSize: '0.75rem', fontStyle: 'italic', color: '#555555', marginTop: '0.25rem' }}>
-                  Barangay San Jose, QC
+                <div style={{ fontSize: '0.7rem', fontStyle: 'italic', color: '#555555', marginTop: '0.15rem' }}>
+                  Barangay San Isidro
                 </div>
               </div>
             </div>
 
             {/* Bottom official footer */}
-            <div style={{ marginTop: '2rem', paddingTop: '0.75rem', borderTop: '1px dashed #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '0.725rem', color: '#666666' }}>
+            <div style={{ marginTop: '0.85rem', paddingTop: '0.4rem', borderTop: '1px dashed #cbd5e1', display: 'flex', justifyContent: 'space-between', fontSize: '0.685rem', color: '#666666' }}>
               <span>Doc Ref: {application.referenceNumber}</span>
               <span>Not valid without official dry seal</span>
               <span>Barangay e-Services Portal Official Record</span>
@@ -308,6 +309,81 @@ export const CertificatePrintView: React.FC<CertificatePrintViewProps> = ({
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media print {
+          @page {
+            size: portrait;
+            margin: 0 !important;
+          }
+          html, body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            overflow: hidden !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body * {
+            visibility: hidden !important;
+          }
+          .print-area,
+          .print-area * {
+            visibility: visible !important;
+          }
+          .print-area {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            padding: 8mm 12mm !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            background: #ffffff !important;
+            box-sizing: border-box !important;
+            page-break-after: avoid !important;
+            page-break-before: avoid !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            break-after: avoid !important;
+          }
+          .certificate-border {
+            border: 2.5px double #1e3a8a !important;
+            padding: 1.25rem 1.75rem !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            min-height: 0 !important;
+          }
+          .modal-overlay,
+          .modal-content {
+            position: static !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            display: block !important;
+            border: none !important;
+            height: auto !important;
+          }
+          .no-print {
+            display: none !important;
+            visibility: hidden !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
