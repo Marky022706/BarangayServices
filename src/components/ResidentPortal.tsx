@@ -10,6 +10,7 @@ import {
   IconClock, 
   IconEye 
 } from './Icons';
+import { StatusBadge } from './StatusBadge';
 
 interface ResidentPortalProps {
   resident: ResidentProfile;
@@ -261,13 +262,11 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                       </div>
                     </td>
                     <td>
-                      <span className={`badge badge-${req.status}`}>
-                        {req.status === 'ready_for_pickup' ? 'Ready for Pickup' : req.status}
-                      </span>
+                      <StatusBadge status={req.status} size="sm" />
                     </td>
                     <td>{req.createdAt}</td>
                     <td>
-                      {(req.status === 'issued' || req.status === 'ready_for_pickup') ? (
+                      {(req.status === 'Approved' || req.status === 'Ready for Claiming' || req.status === 'Successful') ? (
                         <button className="btn btn-primary btn-sm" onClick={() => onViewCertificate(req)}>
                           <IconEye className="w-3.5 h-3.5" /> View / Print
                         </button>
