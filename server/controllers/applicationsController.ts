@@ -194,8 +194,8 @@ export async function createApplication(req: Request, res: Response): Promise<vo
         payment?.status || 'Pending',
         payment?.gcashNumber?.trim() || null,
         payment?.gcashName?.trim() || null,
-        payment?.gcashReferenceNumber?.trim() || null,
-        payment?.amountPaid?.trim() || null,
+        payment?.gcashReferenceNumber?.trim()?.slice(0, 100) || null,
+        payment?.amountPaid?.trim()?.slice(0, 150) || null,
         'Application received and placed in queue for initial document review.'
       ]
     );

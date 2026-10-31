@@ -44,6 +44,15 @@ export async function initializeDatabase(): Promise<void> {
 
   await dbConn.query(schemaSql);
 
+  // Ensure existing columns have sufficient length for service fee strings & statuses
+  await dbConn.query(`
+    ALTER TABLE applications
+      MODIFY COLUMN status ENUM('Pending Review', 'Under Verification', 'Approved', 'Rejected', 'Ready for Claiming', 'Successful') NOT NULL DEFAULT 'Pending Review',
+      MODIFY COLUMN length_of_residency VARCHAR(100) NULL,
+      MODIFY COLUMN gcash_reference_number VARCHAR(100) NULL,
+      MODIFY COLUMN amount_paid VARCHAR(150) NULL;
+  `);
+
   // 3. Seed Services if not present
   console.log('[DB INIT] Checking available services...');
   const [existingServices] = await dbConn.query<mysql.RowDataPacket[]>('SELECT COUNT(*) as cnt FROM services');

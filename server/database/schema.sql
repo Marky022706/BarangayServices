@@ -77,15 +77,15 @@ CREATE TABLE IF NOT EXISTS `applications` (
   `other_purpose` VARCHAR(255) NULL,
   `assistance_type` VARCHAR(255) NULL,
   `additional_info` TEXT NULL,
-  `length_of_residency` VARCHAR(50) NULL,
+  `length_of_residency` VARCHAR(100) NULL,
 
   -- Payment details
   `payment_method` ENUM('gcash', 'pay_on_pickup') NOT NULL DEFAULT 'pay_on_pickup',
   `payment_status` ENUM('Pending', 'Paid', 'Waived') NOT NULL DEFAULT 'Pending',
   `gcash_number` VARCHAR(30) NULL,
   `gcash_name` VARCHAR(100) NULL,
-  `gcash_reference_number` VARCHAR(50) NULL,
-  `amount_paid` VARCHAR(50) NULL,
+  `gcash_reference_number` VARCHAR(100) NULL,
+  `amount_paid` VARCHAR(150) NULL,
 
   -- Staff review and processing
   `remarks` TEXT NULL,

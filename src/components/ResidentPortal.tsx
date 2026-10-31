@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { DocumentType, PaymentMethod, PaymentStatus, ServiceRequest, ResidentProfile, CivilStatus } from '../types';
+import type { DocumentType, PaymentMethod, PaymentStatus, ServiceRequest, ResidentProfile, CivilStatus, ApplicationStatus } from '../types';
 import { 
   IconFileText, 
   IconShieldCheck, 
@@ -262,7 +262,7 @@ export const ResidentPortal: React.FC<ResidentPortalProps> = ({
                       </div>
                     </td>
                     <td>
-                      <StatusBadge status={req.status} size="sm" />
+                      <StatusBadge status={req.status as ApplicationStatus} size="sm" />
                     </td>
                     <td>{req.createdAt}</td>
                     <td>

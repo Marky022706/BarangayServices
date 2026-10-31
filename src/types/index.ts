@@ -100,6 +100,7 @@ export interface ResidentProfile {
 export interface ServiceRequest {
   id: string;
   referenceCode: string;
+  controlNumber?: string;
   documentType: DocumentType;
   fullName: string;
   age: number;
@@ -113,8 +114,8 @@ export interface ServiceRequest {
   purpose: string;
   indigencyStatementAccepted?: boolean;
   noDerogatoryRecordConfirmed?: boolean;
-  paymentMethod: PaymentMethod;
-  paymentStatus: PaymentStatus;
+  paymentMethod: PaymentMethod | 'pickup';
+  paymentStatus: PaymentStatus | 'pending' | 'paid' | 'verified' | 'waived';
   amount: number;
   paymentReferenceNumber?: string;
   paymentDate?: string;
@@ -122,7 +123,8 @@ export interface ServiceRequest {
   barangayName?: string;
   cityMunicipality?: string;
   province?: string;
-  status: ApplicationStatus;
+  status: ApplicationStatus | 'pending' | 'processing' | 'issued' | 'ready_for_pickup' | 'rejected';
+  rejectionReason?: string;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { ServiceRequest, ApplicationStatus } from '../types';
+import type { ServiceRequest } from '../types';
 import { 
   IconFileText, 
   IconCheckCircle, 
@@ -15,9 +15,9 @@ interface AdminPortalProps {
   requests: ServiceRequest[];
   onUpdateStatus: (
     id: string, 
-    status: ApplicationStatus, 
+    status: ServiceRequest['status'], 
     controlNumber?: string, 
-    paymentStatus?: 'pending' | 'paid' | 'verified' | 'waived',
+    paymentStatus?: ServiceRequest['paymentStatus'],
     rejectionReason?: string
   ) => void;
   onViewCertificate: (req: ServiceRequest) => void;
@@ -64,7 +64,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
   const handleApprove = (req: ServiceRequest) => {
     const defaultCtrl = customControlNo.trim() || `${req.documentType.substring(0, 3).toUpperCase()}-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newStatus: ApplicationStatus = req.paymentMethod === 'pickup' && req.paymentStatus !== 'verified' ? 'ready_for_pickup' : 'issued';
+    const newStatus: ServiceRequest['status'] = req.paymentMethod === 'pickup' && req.paymentStatus !== 'verified' ? 'ready_for_pickup' : 'issued';
     const newPaymentStatus = req.paymentMethod === 'pickup' && req.paymentStatus !== 'verified' ? 'verified' : req.paymentStatus;
     
     onUpdateStatus(req.id, newStatus, defaultCtrl, newPaymentStatus);
