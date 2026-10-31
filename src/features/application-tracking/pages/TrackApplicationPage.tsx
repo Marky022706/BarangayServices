@@ -59,10 +59,25 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
     });
   };
 
+  const validateReferenceFormat = (rawRef: string): string | null => {
+    const trimmed = rawRef.trim();
+    if (!trimmed) {
+      return 'Reference number is required. Please enter the code from your confirmation receipt (e.g. BRGY-2026-CLR-0001).';
+    }
+    if (trimmed.length < 6 || trimmed.length > 35) {
+      return 'Invalid reference number length. Enter a complete reference code (e.g. BRGY-2026-CLR-0001).';
+    }
+    if (!/^[A-Za-z0-9-]+$/.test(trimmed)) {
+      return 'Reference number contains invalid characters. Only letters, numbers, and hyphens (-) are allowed.';
+    }
+    return null;
+  };
+
   const fetchTracking = async (ref: string) => {
-    if (!ref.trim()) {
+    const validationErr = validateReferenceFormat(ref);
+    if (validationErr) {
       setActiveRecord(null);
-      setSearchError('Please enter a valid reference number.');
+      setSearchError(validationErr);
       return;
     }
 
@@ -204,10 +219,17 @@ export const TrackApplication: React.FC<TrackApplicationProps> = ({
                 <input
                   id="referenceInput"
                   type="text"
+                  maxLength={35}
                   value={searchInput}
                   onChange={(e) => {
                     setSearchInput(e.target.value);
                     if (searchError) setSearchError(null);
+                  }}
+                  onBlur={() => {
+                    if (searchInput.trim()) {
+                      const err = validateReferenceFormat(searchInput);
+                      if (err) setSearchError(err);
+                    }
                   }}
                   placeholder="e.g. BRGY-2026-CLR-8921"
                   aria-invalid={Boolean(searchError)}

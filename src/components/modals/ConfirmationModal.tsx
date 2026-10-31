@@ -192,7 +192,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   display: 'block',
                   fontSize: '0.85rem',
                   fontWeight: 600,
-                  color: '#1e293b',
+                  color: reasonError ? '#b91c1c' : '#1e293b',
                   marginBottom: '0.35rem'
                 }}
               >
@@ -200,6 +200,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </label>
               <textarea
                 id="reasonInput"
+                maxLength={300}
                 value={reasonValue}
                 onChange={(e) => onReasonChange?.(e.target.value)}
                 disabled={isLoading}
@@ -209,7 +210,8 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   width: '100%',
                   padding: '0.625rem 0.85rem',
                   borderRadius: '0.5rem',
-                  border: `1.5px solid ${reasonError ? '#dc2626' : '#cbd5e1'}`,
+                  border: `1.5px solid ${reasonError ? '#ef4444' : '#cbd5e1'}`,
+                  boxShadow: reasonError ? '0 0 0 1px rgba(239, 68, 68, 0.2)' : 'none',
                   fontSize: '0.9rem',
                   color: '#1e293b',
                   outline: 'none',

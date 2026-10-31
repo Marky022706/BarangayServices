@@ -19,6 +19,39 @@ export const StaffLoginGate: React.FC<StaffLoginGateProps> = ({ onAuthenticated 
   const usernameInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
 
+  const validateUsernameField = (rawVal: string): string => {
+    const val = rawVal.trim();
+    if (!val) {
+      return 'Please enter your email or username.';
+    }
+    if (val.length < 3) {
+      return 'Username or email must be at least 3 characters long.';
+    }
+    if (val.length > 80) {
+      return 'Username or email cannot exceed 80 characters.';
+    }
+    if (val.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) {
+      return 'Please enter a valid email address format (e.g. staff@barangay.gov.ph).';
+    }
+    if (!val.includes('@') && !/^[A-Za-z0-9._-]+$/.test(val)) {
+      return 'Username can only contain letters, numbers, dots, underscores, or hyphens.';
+    }
+    return '';
+  };
+
+  const validatePasswordField = (rawVal: string): string => {
+    if (!rawVal) {
+      return 'Please enter your password.';
+    }
+    if (rawVal.length < 4) {
+      return 'Password must be at least 4 characters long.';
+    }
+    if (rawVal.length > 128) {
+      return 'Password cannot exceed 128 characters.';
+    }
+    return '';
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -28,25 +61,15 @@ export const StaffLoginGate: React.FC<StaffLoginGateProps> = ({ onAuthenticated 
     }
 
     const trimmedIdentifier = username.trim();
-    let hasValidationError = false;
+    const uErr = validateUsernameField(username);
+    const pErr = validatePasswordField(password);
 
-    if (!trimmedIdentifier) {
-      setUsernameError('Please enter your email or username.');
-      hasValidationError = true;
-    } else {
-      setUsernameError('');
-    }
+    setUsernameError(uErr);
+    setPasswordError(pErr);
 
-    if (!password) {
-      setPasswordError('Please enter your password.');
-      hasValidationError = true;
-    } else {
-      setPasswordError('');
-    }
-
-    if (hasValidationError) {
+    if (uErr || pErr) {
       setError('');
-      if (!trimmedIdentifier) {
+      if (uErr) {
         usernameInputRef.current?.focus();
       } else {
         passwordInputRef.current?.focus();
@@ -395,11 +418,18 @@ export const StaffLoginGate: React.FC<StaffLoginGateProps> = ({ onAuthenticated 
                   ref={usernameInputRef}
                   id="staff-username"
                   type="text"
+                  maxLength={80}
                   value={username}
                   onChange={(e) => {
-                    setUsername(e.target.value);
-                    if (usernameError) setUsernameError('');
+                    const val = e.target.value;
+                    setUsername(val);
+                    if (usernameError) setUsernameError(validateUsernameField(val));
                     if (error) setError('');
+                  }}
+                  onBlur={(e) => {
+                    if (e.target.value.trim()) {
+                      setUsernameError(validateUsernameField(e.target.value));
+                    }
                   }}
                   disabled={isLoading}
                   placeholder="Enter your email or username (e.g. admin)"
@@ -464,11 +494,18 @@ export const StaffLoginGate: React.FC<StaffLoginGateProps> = ({ onAuthenticated 
                     ref={passwordInputRef}
                     id="staff-password"
                     type={showPassword ? 'text' : 'password'}
+                    maxLength={128}
                     value={password}
                     onChange={(e) => {
-                      setPassword(e.target.value);
-                      if (passwordError) setPasswordError('');
+                      const val = e.target.value;
+                      setPassword(val);
+                      if (passwordError) setPasswordError(validatePasswordField(val));
                       if (error) setError('');
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value) {
+                        setPasswordError(validatePasswordField(e.target.value));
+                      }
                     }}
                     disabled={isLoading}
                     placeholder="Enter your password"

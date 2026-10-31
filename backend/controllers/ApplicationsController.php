@@ -167,6 +167,34 @@ function handleCreateApplication(array $body): void {
         ], 400);
     }
 
+    if ($purpose === 'Other') {
+        $otherPurposeCheck = trim((string)($details['otherPurpose'] ?? ''));
+        if (mb_strlen($otherPurposeCheck) < 5) {
+            sendJsonResponse([
+                'success' => false,
+                'message' => 'Please specify a valid other purpose (at least 5 characters).',
+            ], 400);
+        }
+    }
+
+    $paymentMethodCheck = !empty($payment['method']) ? (string)$payment['method'] : 'pay_on_pickup';
+    if ($paymentMethodCheck === 'gcash') {
+        $gcashNumberCheck = preg_replace('/[\s\-]/', '', trim((string)($payment['gcashNumber'] ?? '')));
+        $gcashNameCheck   = trim((string)($payment['gcashName'] ?? ''));
+        if (!preg_match('/^(09|\+639)\d{9}$/', (string)$gcashNumberCheck)) {
+            sendJsonResponse([
+                'success' => false,
+                'message' => 'Please enter a valid 11-digit GCash mobile number starting with 09.',
+            ], 400);
+        }
+        if (mb_strlen($gcashNameCheck) < 3) {
+            sendJsonResponse([
+                'success' => false,
+                'message' => 'Please enter the full account name registered with your GCash account.',
+            ], 400);
+        }
+    }
+
     $pdo = getDbConnection();
     $authUser = getOptionalAuthUser();
 

@@ -141,7 +141,8 @@ function AppContent() {
   };
 
   const handleNewApplication = (newApp: ApplicationRecord) => {
-    setApplications((prev) => [newApp, ...prev.filter(a => a.id !== newApp.id)]);
+    if (!newApp || !newApp.id) return;
+    setApplications((prev) => [newApp, ...prev.filter((a) => a && a.id !== newApp.id)]);
   };
 
   const handleUpdateStatus = async (

@@ -7,11 +7,11 @@ export const applicationService = {
    * Submit new document application
    */
   async create(payload: CreateApplicationPayload): Promise<{ record: ApplicationRecord; referenceNumber: string }> {
-    const res = await request<ApiResponse<{ application: ApplicationRecord; referenceNumber: string }>>('/applications', {
+    const res = await request<ApiResponse<ApplicationRecord>>('/applications', {
       method: 'POST',
       body: JSON.stringify(payload)
     });
-    const record = res.data?.application || (res as any).application;
+    const record: ApplicationRecord = (res.data as any)?.application || res.data || (res as any).application;
     const referenceNumber = res.referenceNumber || record?.referenceNumber || '';
     return { record, referenceNumber };
   },
@@ -44,7 +44,7 @@ export const applicationService = {
    */
   async getById(id: string): Promise<ApplicationRecord> {
     const res = await request<ApiResponse<ApplicationRecord>>(`/applications/${id}`);
-    return res.data || (res as any).application;
+    return (res.data as any)?.application || res.data || (res as any).application;
   },
 
   /**
@@ -55,4 +55,3 @@ export const applicationService = {
     return res.data || (res as any).history || [];
   }
 };
-

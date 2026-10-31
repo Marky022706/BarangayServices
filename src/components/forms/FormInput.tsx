@@ -15,6 +15,11 @@ interface FormInputProps {
   helperText?: string;
   error?: string;
   rows?: number;
+  maxLength?: number;
+  min?: string;
+  max?: string;
+  autoComplete?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   className?: string;
   style?: React.CSSProperties;
 }
@@ -33,6 +38,11 @@ export const FormInput: React.FC<FormInputProps> = ({
   helperText,
   error,
   rows = 3,
+  maxLength,
+  min,
+  max,
+  autoComplete,
+  inputMode,
   className = '',
   style
 }) => {
@@ -105,6 +115,7 @@ export const FormInput: React.FC<FormInputProps> = ({
           placeholder={placeholder}
           disabled={disabled}
           rows={rows}
+          maxLength={maxLength}
           aria-invalid={!!error}
           aria-describedby={describedBy}
           style={{
@@ -123,6 +134,11 @@ export const FormInput: React.FC<FormInputProps> = ({
           onBlur={onBlur}
           placeholder={placeholder}
           disabled={disabled}
+          maxLength={maxLength}
+          min={min}
+          max={max}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
           aria-invalid={!!error}
           aria-describedby={describedBy}
           style={baseInputStyle}

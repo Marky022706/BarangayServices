@@ -178,17 +178,192 @@ export const ApplyPage: React.FC<ApplyProps> = ({
   // Current Selected Service Info from Live MySQL Database
   const selectedService = availableServices.find((s) => s.id === selectedDocId);
 
+  const todayIso = new Date().toISOString().split('T')[0];
+  const NAME_REGEX = /^[A-Za-zÀ-ÖØ-öø-ÿÑñ\s.'-]+$/;
+  const SUFFIX_REGEX = /^[A-Za-z0-9.\s-]{1,10}$/;
+  const ADDRESS_TEXT_REGEX = /^[A-Za-z0-9À-ÖØ-öø-ÿÑñ\s.,'#()/-]+$/;
+
+  // Validate a single field by name and return an error message (or empty string if valid)
+  const validateSingleField = (fieldName: string, rawVal?: string): string => {
+    const val = (rawVal ?? '').trim();
+
+    switch (fieldName) {
+      case 'firstName':
+        if (!val) return 'First Name is required. Please enter your legal given name.';
+        if (val.length < 2) return 'First Name is too short. Please enter at least 2 characters.';
+        if (val.length > 60) return 'First Name cannot exceed 60 characters.';
+        if (!NAME_REGEX.test(val)) return 'First Name contains invalid characters. Use letters, spaces, hyphens, or periods only.';
+        return '';
+
+      case 'middleName':
+        if (!val) return '';
+        if (val.length < 2) return 'Middle Name must be at least 2 characters if provided, or leave it blank.';
+        if (val.length > 60) return 'Middle Name cannot exceed 60 characters.';
+        if (!NAME_REGEX.test(val)) return 'Middle Name contains invalid characters. Use letters, spaces, hyphens, or periods only.';
+        return '';
+
+      case 'lastName':
+        if (!val) return 'Last Name is required. Please enter your legal family name.';
+        if (val.length < 2) return 'Last Name is too short. Please enter at least 2 characters.';
+        if (val.length > 60) return 'Last Name cannot exceed 60 characters.';
+        if (!NAME_REGEX.test(val)) return 'Last Name contains invalid characters. Use letters, spaces, hyphens, or periods only.';
+        return '';
+
+      case 'suffix':
+        if (!val) return '';
+        if (val.length > 10 || !SUFFIX_REGEX.test(val)) {
+          return 'Invalid suffix format. Enter a standard suffix (e.g. Jr., Sr., II, III) up to 10 characters.';
+        }
+        return '';
+
+      case 'dateOfBirth': {
+        if (!val) return 'Date of Birth is required. Please select your birth date.';
+        const dobDate = new Date(val);
+        const now = new Date();
+        if (isNaN(dobDate.getTime()) || dobDate > now || dobDate.getFullYear() < 1900) {
+          return 'Please enter a valid Date of Birth between 1900 and today.';
+        }
+        return '';
+      }
+
+      case 'placeOfBirth':
+        if (!val) return 'Place of Birth is required. Please enter the City or Municipality where you were born.';
+        if (val.length < 2) return 'Place of Birth must be at least 2 characters.';
+        if (val.length > 100) return 'Place of Birth cannot exceed 100 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'Place of Birth contains invalid special characters.';
+        return '';
+
+      case 'civilStatus':
+        if (!val || !['Single', 'Married', 'Widowed', 'Separated', 'Divorced'].includes(val)) {
+          return 'Please select a valid Civil Status from the list.';
+        }
+        return '';
+
+      case 'contactNumber':
+        if (!val) return 'Mobile contact number is required for SMS status updates.';
+        if (!/^(09|\+639)\d{9}$/.test(val.replace(/[\s-]/g, ''))) {
+          return 'Enter a valid 11-digit Philippine mobile number starting with 09 (e.g. 09171234567).';
+        }
+        return '';
+
+      case 'email':
+        if (!val) return '';
+        if (val.length > 100 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) {
+          return 'Please enter a valid email address (e.g. juan.delacruz@email.com) or leave it blank.';
+        }
+        return '';
+
+      case 'houseStreet':
+        if (!val) return '';
+        if (val.length < 2) return 'House No. / Street must be at least 2 characters if provided, or leave it blank.';
+        if (val.length > 120) return 'House No. / Street cannot exceed 120 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'House No. / Street contains invalid special characters.';
+        return '';
+
+      case 'purokSitio':
+        if (!val) return 'Purok / Sitio / Zone is required. Please specify your residential zone.';
+        if (val.length < 2) return 'Purok / Sitio / Zone must be at least 2 characters (e.g. Purok 1).';
+        if (val.length > 60) return 'Purok / Sitio / Zone cannot exceed 60 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'Purok / Sitio / Zone contains invalid special characters.';
+        return '';
+
+      case 'barangay':
+        if (!val) return 'Barangay name is required.';
+        if (val.length < 3) return 'Please enter a complete Barangay name (at least 3 characters).';
+        if (val.length > 80) return 'Barangay name cannot exceed 80 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'Barangay name contains invalid special characters.';
+        return '';
+
+      case 'cityMunicipality':
+        if (!val) return 'City or Municipality is required.';
+        if (val.length < 2) return 'City or Municipality must be at least 2 characters.';
+        if (val.length > 80) return 'City or Municipality cannot exceed 80 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'City or Municipality contains invalid special characters.';
+        return '';
+
+      case 'province':
+        if (!val) return 'Province is required.';
+        if (val.length < 2) return 'Province must be at least 2 characters.';
+        if (val.length > 80) return 'Province cannot exceed 80 characters.';
+        if (!ADDRESS_TEXT_REGEX.test(val)) return 'Province contains invalid special characters.';
+        return '';
+
+      case 'purpose':
+        if (!val) return 'Please select the purpose of your document request.';
+        return '';
+
+      case 'otherPurpose':
+        if (docDetails.purpose === 'Other') {
+          if (!val) return 'Please specify the exact purpose for your request.';
+          if (val.length < 5) return 'Please provide a more specific purpose (at least 5 characters).';
+          if (val.length > 150) return 'Specified purpose cannot exceed 150 characters.';
+        }
+        return '';
+
+      case 'additionalInfo':
+        if (val && val.length > 300) return 'Additional remarks cannot exceed 300 characters.';
+        return '';
+
+      case 'lengthOfResidency':
+        if (selectedDocId === 'residency' && !val) {
+          return 'Please select your estimated length of residency in the barangay.';
+        }
+        return '';
+
+      case 'gcashNumber':
+        if (paymentMethod === 'gcash') {
+          if (!val) return 'Please enter the GCash mobile number used for payment.';
+          if (!/^(09|\+639)\d{9}$/.test(val.replace(/[\s-]/g, ''))) {
+            return 'Enter a valid 11-digit GCash number starting with 09 (e.g. 09171234567).';
+          }
+        }
+        return '';
+
+      case 'gcashName':
+        if (paymentMethod === 'gcash') {
+          if (!val) return 'Please enter the full account name registered with your GCash account.';
+          if (val.length < 3) return 'GCash Account Name must be at least 3 characters.';
+          if (val.length > 80) return 'GCash Account Name cannot exceed 80 characters.';
+          if (!NAME_REGEX.test(val)) return 'GCash Account Name should only contain letters, spaces, periods, or hyphens.';
+        }
+        return '';
+
+      default:
+        return '';
+    }
+  };
+
+  const handleFieldBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    const errMsg = validateSingleField(name, value);
+    setErrors((prev) => {
+      const updated = { ...prev };
+      if (errMsg) {
+        updated[name] = errMsg;
+      } else {
+        delete updated[name];
+      }
+      return updated;
+    });
+  };
+
   // Handle Personal Info Changes
   const handlePersonalInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setPersonalInfo((prev) => ({ ...prev, [name]: value }));
-    // Clear error for that field
     if (errors[name]) {
+      const errMsg = validateSingleField(name, value);
       setErrors((prev) => {
         const updated = { ...prev };
-        delete updated[name];
+        if (errMsg) {
+          updated[name] = errMsg;
+        } else {
+          delete updated[name];
+        }
         return updated;
       });
     }
@@ -201,9 +376,14 @@ export const ApplyPage: React.FC<ApplyProps> = ({
     const { name, value } = e.target;
     setDocDetails((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
+      const errMsg = validateSingleField(name, value);
       setErrors((prev) => {
         const updated = { ...prev };
-        delete updated[name];
+        if (errMsg) {
+          updated[name] = errMsg;
+        } else {
+          delete updated[name];
+        }
         return updated;
       });
     }
@@ -218,59 +398,49 @@ export const ApplyPage: React.FC<ApplyProps> = ({
         newErrors.document = 'Please choose a document to request before proceeding.';
       }
     } else if (step === 2) {
-      if (!personalInfo.firstName.trim()) newErrors.firstName = 'Please enter your First Name.';
-      if (!personalInfo.lastName.trim()) newErrors.lastName = 'Please enter your Last Name.';
-      if (!personalInfo.dateOfBirth) {
-        newErrors.dateOfBirth = 'Please select your Date of Birth.';
-      } else {
-        const dobDate = new Date(personalInfo.dateOfBirth);
-        const now = new Date();
-        if (isNaN(dobDate.getTime()) || dobDate > now || dobDate.getFullYear() < 1900) {
-          newErrors.dateOfBirth = 'Please enter a valid Date of Birth that is not in the future.';
-        }
-      }
-      if (!personalInfo.placeOfBirth.trim()) newErrors.placeOfBirth = 'Please enter your Place of Birth (City/Municipality).';
-      if (!personalInfo.contactNumber.trim()) {
-        newErrors.contactNumber = 'Mobile contact number is required for status updates.';
-      } else if (!/^(09|\+639)\d{9}$/.test(personalInfo.contactNumber.replace(/[\s-]/g, ''))) {
-        newErrors.contactNumber = 'Enter a valid 11-digit Philippine mobile number starting with 09 (e.g. 09171234567).';
-      }
-      if (personalInfo.email && personalInfo.email.trim() !== '') {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalInfo.email.trim())) {
-          newErrors.email = 'Please enter a valid email address (e.g. juan.delacruz@email.com) or leave it blank.';
-        }
-      }
-      if (!personalInfo.purokSitio.trim()) newErrors.purokSitio = 'Please specify your Purok, Sitio, or Zone.';
-      if (!personalInfo.barangay.trim()) newErrors.barangay = 'Barangay name is required.';
-      if (!personalInfo.cityMunicipality.trim()) newErrors.cityMunicipality = 'City or Municipality is required.';
-      if (!personalInfo.province.trim()) newErrors.province = 'Province is required.';
+      const step2Fields: (keyof PersonalInfo)[] = [
+        'firstName',
+        'middleName',
+        'lastName',
+        'suffix',
+        'dateOfBirth',
+        'placeOfBirth',
+        'civilStatus',
+        'contactNumber',
+        'email',
+        'houseStreet',
+        'purokSitio',
+        'barangay',
+        'cityMunicipality',
+        'province'
+      ];
+      step2Fields.forEach((field) => {
+        const msg = validateSingleField(field, personalInfo[field] || '');
+        if (msg) newErrors[field] = msg;
+      });
     } else if (step === 3) {
-      if (!docDetails.purpose.trim()) {
-        newErrors.purpose = 'Please select or specify the purpose of your request.';
-      }
-      if (docDetails.purpose === 'Other' && !docDetails.otherPurpose?.trim()) {
-        newErrors.otherPurpose = 'Please specify the exact other purpose.';
-      }
-      if (selectedDocId === 'indigency' && !docDetails.assistanceType?.trim()) {
-        newErrors.assistanceType = 'Please indicate the type of assistance requested.';
-      }
-      if (selectedDocId === 'residency' && !docDetails.lengthOfResidency?.trim()) {
-        newErrors.lengthOfResidency = 'Please specify length of residency.';
-      }
+      const purposeErr = validateSingleField('purpose', docDetails.purpose);
+      if (purposeErr) newErrors.purpose = purposeErr;
+
+      const otherPurposeErr = validateSingleField('otherPurpose', docDetails.otherPurpose || '');
+      if (otherPurposeErr) newErrors.otherPurpose = otherPurposeErr;
+
+      const additionalInfoErr = validateSingleField('additionalInfo', docDetails.additionalInfo || '');
+      if (additionalInfoErr) newErrors.additionalInfo = additionalInfoErr;
+
+      const residencyErr = validateSingleField('lengthOfResidency', docDetails.lengthOfResidency || '');
+      if (residencyErr) newErrors.lengthOfResidency = residencyErr;
     } else if (step === 4) {
       if (!agreedToPrivacy) {
         newErrors.privacy = 'You must confirm the truthfulness of the information and accept the privacy notice.';
       }
     } else if (step === 5) {
       if (paymentMethod === 'gcash') {
-        if (!gcashNumber.trim()) {
-          newErrors.gcashNumber = 'Please enter your GCash number.';
-        } else if (!/^09\d{9}$/.test(gcashNumber.replace(/\s/g, ''))) {
-          newErrors.gcashNumber = 'Enter a valid GCash number (e.g. 09171234567).';
-        }
-        if (!gcashName.trim()) {
-          newErrors.gcashName = 'Please enter the account name registered with GCash.';
-        }
+        const numErr = validateSingleField('gcashNumber', gcashNumber);
+        if (numErr) newErrors.gcashNumber = numErr;
+
+        const nameErr = validateSingleField('gcashName', gcashName);
+        if (nameErr) newErrors.gcashName = nameErr;
       }
     }
 
@@ -278,11 +448,23 @@ export const ApplyPage: React.FC<ApplyProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const focusFirstInvalidField = () => {
+    window.setTimeout(() => {
+      const firstInvalid = document.querySelector<HTMLElement>('[aria-invalid="true"]');
+      if (firstInvalid) {
+        firstInvalid.focus({ preventScroll: true });
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 30);
+  };
+
   // Next Step Action
   const handleContinue = () => {
     if (validateStep(currentStep)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setCurrentStep((prev) => prev + 1);
+    } else {
+      focusFirstInvalidField();
     }
   };
 
@@ -317,7 +499,10 @@ export const ApplyPage: React.FC<ApplyProps> = ({
   // Step 4 → 5 (Review → Payment)
   // Step 5 → 6 (Payment → submit + Confirmation)
   const handleSubmitApplication = async () => {
-    if (!validateStep(5) || !selectedDocId) return;
+    if (!validateStep(5) || !selectedDocId) {
+      focusFirstInvalidField();
+      return;
+    }
 
     setIsSubmitting(true);
     setSubmitError(null);
@@ -727,6 +912,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="firstName"
                     value={personalInfo.firstName}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={60}
                     required
                     placeholder="e.g. Juan"
                     error={errors.firstName}
@@ -737,7 +924,10 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="middleName"
                     value={personalInfo.middleName || ''}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={60}
                     placeholder="e.g. Santos (Leave blank if none)"
+                    error={errors.middleName}
                   />
 
                   <FormInput
@@ -745,6 +935,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="lastName"
                     value={personalInfo.lastName}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={60}
                     required
                     placeholder="e.g. Dela Cruz"
                     error={errors.lastName}
@@ -755,7 +947,10 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="suffix"
                     value={personalInfo.suffix || ''}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={10}
                     placeholder="Jr., Sr., III, etc."
+                    error={errors.suffix}
                   />
                 </div>
               </div>
@@ -772,6 +967,9 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="date"
                     value={personalInfo.dateOfBirth}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    min="1900-01-01"
+                    max={todayIso}
                     required
                     error={errors.dateOfBirth}
                   />
@@ -781,6 +979,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="placeOfBirth"
                     value={personalInfo.placeOfBirth}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={100}
                     required
                     placeholder="City / Municipality (e.g. Quezon City)"
                     error={errors.placeOfBirth}
@@ -792,7 +992,9 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="select"
                     value={personalInfo.civilStatus}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
                     required
+                    error={errors.civilStatus}
                     options={[
                       { value: 'Single', label: 'Single' },
                       { value: 'Married', label: 'Married' },
@@ -814,8 +1016,11 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     label="Mobile Contact Number"
                     name="contactNumber"
                     type="tel"
+                    inputMode="numeric"
+                    maxLength={13}
                     value={personalInfo.contactNumber}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
                     required
                     placeholder="0917XXXXXXX"
                     helperText="For SMS status updates regarding your application"
@@ -826,8 +1031,10 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     label="Email Address (Optional)"
                     name="email"
                     type="email"
+                    maxLength={100}
                     value={personalInfo.email || ''}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
                     placeholder="your.name@example.ph"
                     helperText="For electronic notification and digital receipt"
                     error={errors.email}
@@ -846,7 +1053,10 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="houseStreet"
                     value={personalInfo.houseStreet || ''}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={120}
                     placeholder="e.g. 123 Sampaguita Street"
+                    error={errors.houseStreet}
                   />
 
                   <FormInput
@@ -854,6 +1064,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="purokSitio"
                     value={personalInfo.purokSitio}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={60}
                     required
                     placeholder="e.g. Purok 4"
                     error={errors.purokSitio}
@@ -864,6 +1076,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="barangay"
                     value={personalInfo.barangay}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={80}
                     required
                     placeholder="Barangay San Isidro"
                     error={errors.barangay}
@@ -874,6 +1088,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="cityMunicipality"
                     value={personalInfo.cityMunicipality}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={80}
                     required
                     placeholder="Quezon City"
                     error={errors.cityMunicipality}
@@ -884,6 +1100,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     name="province"
                     value={personalInfo.province}
                     onChange={handlePersonalInfoChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={80}
                     required
                     placeholder="Metro Manila"
                     error={errors.province}
@@ -914,6 +1132,7 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="select"
                     value={docDetails.purpose}
                     onChange={handleDocDetailsChange}
+                    onBlur={handleFieldBlur}
                     required
                     placeholder="-- Select Purpose --"
                     options={[
@@ -935,6 +1154,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                       name="otherPurpose"
                       value={docDetails.otherPurpose || ''}
                       onChange={handleDocDetailsChange}
+                      onBlur={handleFieldBlur}
+                      maxLength={150}
                       required
                       placeholder="Please specify the legitimate reason for your clearance request"
                       error={errors.otherPurpose}
@@ -952,6 +1173,7 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="select"
                     value={docDetails.purpose}
                     onChange={handleDocDetailsChange}
+                    onBlur={handleFieldBlur}
                     required
                     placeholder="-- Select Assistance Category --"
                     options={[
@@ -971,6 +1193,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                       name="otherPurpose"
                       value={docDetails.otherPurpose || ''}
                       onChange={handleDocDetailsChange}
+                      onBlur={handleFieldBlur}
+                      maxLength={150}
                       required
                       placeholder="Please specify other assistance purpose"
                       error={errors.otherPurpose}
@@ -978,24 +1202,16 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                   )}
 
                   <FormInput
-                    label="Type of Assistance or Intended Beneficiary / Facility"
-                    name="assistanceType"
-                    value={docDetails.assistanceType || ''}
-                    onChange={handleDocDetailsChange}
-                    required
-                    placeholder="e.g. Philippine Heart Center / DSWD Crisis Intervention Unit"
-                    helperText="Name of hospital, government office, or foundation requesting the Indigency certificate"
-                    error={errors.assistanceType}
-                  />
-
-                  <FormInput
                     label="Additional Information / Household Remarks (Optional)"
                     name="additionalInfo"
                     type="textarea"
                     value={docDetails.additionalInfo || ''}
                     onChange={handleDocDetailsChange}
+                    onBlur={handleFieldBlur}
+                    maxLength={300}
                     placeholder="Optional notes regarding family head, patient name, or student beneficiary"
                     rows={3}
+                    error={errors.additionalInfo}
                   />
                 </div>
               )}
@@ -1009,6 +1225,7 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="select"
                     value={docDetails.purpose}
                     onChange={handleDocDetailsChange}
+                    onBlur={handleFieldBlur}
                     required
                     placeholder="-- Select Purpose --"
                     options={[
@@ -1028,6 +1245,8 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                       name="otherPurpose"
                       value={docDetails.otherPurpose || ''}
                       onChange={handleDocDetailsChange}
+                      onBlur={handleFieldBlur}
+                      maxLength={150}
                       required
                       placeholder="Please specify purpose"
                       error={errors.otherPurpose}
@@ -1040,6 +1259,7 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     type="select"
                     value={docDetails.lengthOfResidency || '1 - 3 Years'}
                     onChange={handleDocDetailsChange}
+                    onBlur={handleFieldBlur}
                     required
                     options={[
                       { value: '6 Months to 1 Year', label: '6 Months to 1 Year' },
@@ -1322,8 +1542,11 @@ export const ApplyPage: React.FC<ApplyProps> = ({
               >
                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
                   <input
+                    id="privacy-consent-checkbox"
                     type="checkbox"
                     checked={agreedToPrivacy}
+                    aria-invalid={!!errors.privacy}
+                    aria-describedby={errors.privacy ? 'privacy-consent-error' : undefined}
                     onChange={(e) => {
                       setAgreedToPrivacy(e.target.checked);
                       if (errors.privacy) {
@@ -1341,8 +1564,21 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                   </span>
                 </label>
                 {errors.privacy && (
-                  <p style={{ margin: '0.5rem 0 0 2rem', fontSize: '0.775rem', color: '#dc2626', fontWeight: 600 }}>
-                    {errors.privacy}
+                  <p
+                    id="privacy-consent-error"
+                    role="alert"
+                    style={{
+                      margin: '0.5rem 0 0 2rem',
+                      fontSize: '0.775rem',
+                      color: '#dc2626',
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    <AlertCircle className="w-3.5 h-3.5" style={{ flexShrink: 0, color: '#dc2626' }} />
+                    <span>{errors.privacy}</span>
                   </p>
                 )}
               </div>
@@ -1466,49 +1702,58 @@ export const ApplyPage: React.FC<ApplyProps> = ({
                     Send <strong>{selectedService?.standardFee}</strong> to GCash number <strong>0917-XXX-XXXX</strong> (Barangay Hall Cashier). Enter your GCash number and name so staff can verify.
                   </div>
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#374151', marginBottom: '0.3rem' }}>
-                      Your GCash Number <span style={{ color: '#dc2626' }}>*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={gcashNumber}
-                      onChange={(e) => setGcashNumber(e.target.value)}
-                      placeholder="e.g. 09171234567"
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        border: `1.5px solid ${errors.gcashNumber ? '#dc2626' : '#d1d5db'}`,
-                        borderRadius: '0.375rem',
-                        fontSize: '0.875rem',
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                    {errors.gcashNumber && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: '0.25rem' }}>{errors.gcashNumber}</div>}
-                  </div>
+                  <FormInput
+                    label="Your GCash Number"
+                    name="gcashNumber"
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={13}
+                    value={gcashNumber}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setGcashNumber(val);
+                      if (errors.gcashNumber) {
+                        const errMsg = validateSingleField('gcashNumber', val);
+                        setErrors((prev) => {
+                          const updated = { ...prev };
+                          if (errMsg) updated.gcashNumber = errMsg;
+                          else delete updated.gcashNumber;
+                          return updated;
+                        });
+                      }
+                    }}
+                    onBlur={handleFieldBlur}
+                    required
+                    placeholder="e.g. 09171234567"
+                    error={errors.gcashNumber}
+                    style={{ marginBottom: '0.25rem' }}
+                  />
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#374151', marginBottom: '0.3rem' }}>
-                      GCash Account Name <span style={{ color: '#dc2626' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={gcashName}
-                      onChange={(e) => setGcashName(e.target.value)}
-                      placeholder="Full name as registered in GCash"
-                      style={{
-                        width: '100%',
-                        padding: '0.55rem 0.75rem',
-                        border: `1.5px solid ${errors.gcashName ? '#dc2626' : '#d1d5db'}`,
-                        borderRadius: '0.375rem',
-                        fontSize: '0.875rem',
-                        outline: 'none',
-                        boxSizing: 'border-box'
-                      }}
-                    />
-                    {errors.gcashName && <div style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: '0.25rem' }}>{errors.gcashName}</div>}
-                  </div>
+                  <FormInput
+                    label="GCash Account Name"
+                    name="gcashName"
+                    type="text"
+                    maxLength={80}
+                    value={gcashName}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setGcashName(val);
+                      if (errors.gcashName) {
+                        const errMsg = validateSingleField('gcashName', val);
+                        setErrors((prev) => {
+                          const updated = { ...prev };
+                          if (errMsg) updated.gcashName = errMsg;
+                          else delete updated.gcashName;
+                          return updated;
+                        });
+                      }
+                    }}
+                    onBlur={handleFieldBlur}
+                    required
+                    placeholder="Full name as registered in GCash"
+                    error={errors.gcashName}
+                    style={{ marginBottom: 0 }}
+                  />
                 </div>
               )}
 

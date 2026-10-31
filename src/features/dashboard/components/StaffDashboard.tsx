@@ -491,12 +491,29 @@ export const StaffDashboard: React.FC<StaffDashboardProps> = ({
     const { app, action, reason } = confirmModal;
     if (!app) return;
 
-    if (action === 'Reject' && !reason.trim()) {
-      setConfirmModal((prev) => ({
-        ...prev,
-        reasonError: 'Please provide a reason for rejecting this application.'
-      }));
-      return;
+    if (action === 'Reject') {
+      const trimmedReason = reason.trim();
+      if (!trimmedReason) {
+        setConfirmModal((prev) => ({
+          ...prev,
+          reasonError: 'Please provide a reason for rejecting this application.'
+        }));
+        return;
+      }
+      if (trimmedReason.length < 5) {
+        setConfirmModal((prev) => ({
+          ...prev,
+          reasonError: 'Please provide a more descriptive rejection reason (at least 5 characters).'
+        }));
+        return;
+      }
+      if (trimmedReason.length > 300) {
+        setConfirmModal((prev) => ({
+          ...prev,
+          reasonError: 'Rejection reason cannot exceed 300 characters.'
+        }));
+        return;
+      }
     }
 
     setConfirmModal((prev) => ({ ...prev, actionError: undefined }));
